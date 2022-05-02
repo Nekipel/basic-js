@@ -13,38 +13,35 @@ const { NotImplementedError } = require('../extensions/index.js');
  * transform([1, 2, 3, '--discard-prev', 4, 5]) => [1, 2, 4, 5]
  * 
  */
-function transform(/*arr*/) {
-//   let newArr
-//   try {
-//     arr
-//   } catch (e) {
-//     if (!Array.isArray(arr)) {
-//       "\'arr\' parameter must be an instance of the Array!"
-//     }
-//     // ... и т.д.
-//   }
-//   let answer = ['--discard-next','--double-next','--discard-next','--double-next']
-//   // // let newArr
-//   // if(!Array.isArray(arr)){
-//   //   return "\'arr\' parameter must be an instance of the Array!"
-//   //   // return "Invalid date!"
-//   // }
-// return newArr=arr.filter(
-//   x=>{
-//   if(x === answer[0]){
-//     x+1 = 
-//   }
-//   })
+function transform(arr) {
+  if (!Array.isArray(arr)) throw new Error('\'arr\' parameter must be an instance of the Array!');
+  let copyArray = Array.from(arr);
+  for (let i = 0; i < arr.length; i++) {
+    switch (copyArray[i]){
+      case '--double-next':
+        if (i === arr.length - 1) copyArray.splice(i, 1);
+        else if (copyArray[i + 2] === '--double-prev') copyArray.splice(i, 3, copyArray[i + 1], copyArray[i + 1], copyArray[i + 1]);
+        else if (copyArray[i + 2] === '--discard-prev') copyArray.splice(i, 3, copyArray[i + 1]);
+        else copyArray.splice(i, 1, copyArray[i + 1]);
+        break;
+      case '--discard-next':
+        if (i === arr.length - 1) copyArray.splice(i, 1);
+        else if (copyArray[i + 2] === '--double-prev' || '--discard-prev') copyArray.splice(i, 3);
+        else copyArray.splice(i, 2);
+        break;
+      case '--double-prev':
+        if (i === 0) copyArray.splice(i, 1);
+        else copyArray.splice(i, 1, copyArray[i - 1]);
+        break;
+      case '--discard-prev':
+        if (i === arr.length - 1) copyArray.splice(i, 1);
+        if (i === 0) copyArray.splice(i, 1);
+        else copyArray.splice(i - 1, 2);
+        break;
+    }
+  }
 
-  // for(let i=0;i<arr.length;i++){
-  //   arr.map(x=>{
-  //     if(2){
-
-  //     }
-  //   })
-  // }
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+  return copyArray;
 }
 
 module.exports = {
